@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,40 +31,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.groove.ui.theme.GrooveDark
-import com.example.groove.ui.theme.GrooveDarkSurface
-import com.example.groove.ui.theme.GrooveDimGreen
-import com.example.groove.ui.theme.GrooveSageGreen
-import com.example.groove.ui.theme.GrooveTextSecondary
-import com.example.groove.ui.theme.GrooveWhiteSmoke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-private val BackgroundGradient = Brush.verticalGradient(
-    colors = listOf(
-        GrooveDark,
-        GrooveDarkSurface,
-        GrooveDark
-    )
-)
-
-private val AccentPurple  = GrooveSageGreen
-private val DimPurple     = GrooveDimGreen
-private val TextPrimary   = GrooveWhiteSmoke
-private val TextSecondary = GrooveTextSecondary
+import com.example.groove.ui.theme.GrooveTheme
 
 @Composable
 fun SplashScreen(onGetStarted: () -> Unit = {}) {
     val pagerState = rememberPagerState(pageCount = { 3 })
 
+    // gradient uses colorScheme — adapts to day/night automatically
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.background,
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.background,
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGradient)
+            .background(backgroundGradient)
     ) {
         HorizontalPager(
             state = pagerState,
@@ -95,7 +86,10 @@ fun SplashScreen(onGetStarted: () -> Unit = {}) {
                         .height(8.dp)
                         .width(dotWidth)
                         .clip(CircleShape)
-                        .background(if (isSelected) AccentPurple else DimPurple)
+                        .background(
+                            if (isSelected) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.secondary
+                        )
                 )
             }
         }
@@ -112,7 +106,7 @@ fun SplashScreen(onGetStarted: () -> Unit = {}) {
             TextButton(onClick = { /* TODO: handle skip */ }) {
                 Text(
                     text = "Skip",
-                    color = AccentPurple,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -131,12 +125,11 @@ private fun OnboardingPage1() {
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
-        // Illustration placeholder
         Box(
             modifier = Modifier
                 .size(190.dp)
                 .clip(CircleShape)
-                .background(GrooveDimGreen),
+                .background(MaterialTheme.colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
             Text(text = "✨", fontSize = 72.sp)
@@ -148,7 +141,7 @@ private fun OnboardingPage1() {
             text = "Unlock Your Potential",
             fontSize = 30.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             lineHeight = 40.sp
         )
@@ -158,7 +151,7 @@ private fun OnboardingPage1() {
         Text(
             text = "Whether summarizing content, paraphrasing or generating a story — we have your backup. Use it for free.",
             fontSize = 16.sp,
-            color = TextSecondary,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.65f), // muted secondary text
             textAlign = TextAlign.Center,
             lineHeight = 26.sp
         )
@@ -180,7 +173,7 @@ private fun OnboardingPage2() {
                 .fillMaxWidth()
                 .height(260.dp)
                 .clip(RoundedCornerShape(24.dp))
-                .background(GrooveDimGreen.copy(alpha = 0.55f)),
+                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.55f)),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -190,7 +183,7 @@ private fun OnboardingPage2() {
                 Text(text = "🚀", fontSize = 52.sp)
                 Text(
                     text = "Placeholder",
-                    color = AccentPurple,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -214,22 +207,28 @@ private fun OnboardingPage3(onGetStarted: () -> Unit) {
                 .height(58.dp),
             shape = RoundedCornerShape(18.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = AccentPurple
+                containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text(
                 text = "Get Started",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 letterSpacing = 0.5.sp
             )
         }
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0C0820)
+@Preview(showBackground = true, name = "Dark")
 @Composable
-fun SplashScreenPreview() {
-    SplashScreen()
+fun SplashScreenPreviewDark() {
+    GrooveTheme(darkTheme = true) { SplashScreen() }
+}
+
+@Preview(showBackground = true, name = "Light")
+@Composable
+fun SplashScreenPreviewLight() {
+    GrooveTheme(darkTheme = false) { SplashScreen() }
 }

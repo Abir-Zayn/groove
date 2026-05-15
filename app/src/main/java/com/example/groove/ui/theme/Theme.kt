@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary        = GrooveSageGreen,
     onPrimary      = GrooveDark,
-    background     = GrooveDark,
+    background     = GrooveBlack,       // night bg
     onBackground   = GrooveWhiteSmoke,
     surface        = GrooveDarkSurface,
     onSurface      = GrooveWhiteSmoke,
@@ -25,7 +25,7 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary        = GrooveSageGreen,
     onPrimary      = GrooveWhiteSmoke,
-    background     = GrooveWhiteSmoke,
+    background     = GrooveWhiteSmoke,  // day bg
     onBackground   = GrooveDark,
     surface        = GrooveWhiteSmoke,
     onSurface      = GrooveDark,
