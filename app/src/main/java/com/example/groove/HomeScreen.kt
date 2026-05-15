@@ -65,5 +65,6 @@ private fun HomeContent() {
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
             modifier = Modifier.padding(start = 20.dp, top = 4.dp),
         )
+        ProUpgradeCard()
     }
 }
