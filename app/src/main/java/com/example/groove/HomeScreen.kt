@@ -1,7 +1,9 @@
 package com.example.groove
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -14,9 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.groove.navigation.BottomNavTab
 import com.example.groove.navigation.GrooveBottomNavBar
+import com.example.groove.util.greeting
 
 @Composable
 fun HomeScreen() {
@@ -44,15 +48,22 @@ fun HomeScreen() {
 
 @Composable
 private fun HomeContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            text = "Hello World",
-            fontSize = 32.sp,
+            text = greeting("Abir Zayn"),
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 24.dp, end = 20.dp),
+        )
+        Text(
+            text = "What are you vibing to?",
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Normal,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            modifier = Modifier.padding(start = 20.dp, top = 4.dp),
         )
     }
 }
