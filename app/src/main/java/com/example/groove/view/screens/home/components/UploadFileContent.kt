@@ -52,7 +52,7 @@ fun UploadFileContent(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
-        val name = resolveFileName(context, uri)
+        val name = resolveFileName(context, uri).replace(' ', '_')
         val ext = name.substringAfterLast('.', "").lowercase()
         if (ext in ALLOWED_EXTENSIONS) {
             FileState.pendingUri = uri

@@ -1,5 +1,6 @@
 package com.example.groove.controller
 
+import android.util.Log
 import com.example.groove.model.openrouter.ChatRequest
 import com.example.groove.model.openrouter.Message
 import com.example.groove.network.OpenRouterClient
@@ -28,35 +29,69 @@ class SummarizeController {
     }
 
     fun summarizeStreaming(text: String, maxWords: Int): Flow<String> = flow {
-        val response = api.streamChatCompletion(
-            ChatRequest(
-                model = OpenRouterClient.DEFAULT_MODEL,
-                messages = listOf(
-                    Message(
-                        role = "system",
-                        content = "Summarize the following text in approximately $maxWords words. Be clear and concise.",
-                    ),
-                    Message(role = "user", content = text),
+        val request = ChatRequest(
+            model = OpenRouterClient.DEFAULT_MODEL,
+            messages = listOf(
+                Message(
+                    role = "system",
+                    content = "Summarize the following text in approximately $maxWords words. Be clear and concise.",
                 ),
-                maxTokens = (maxWords * 2).coerceAtLeast(256),
-                stream = true,
-            )
+                Message(role = "user", content = text),
+            ),
+            maxTokens = (maxWords * 2).coerceAtLeast(256),
+            stream = true,
         )
-        val body = response.body() ?: error("Empty streaming response")
+        Log.d("GrooveSSE", "→ POST model=${request.model} maxTokens=${request.maxTokens} contentLen=${text.length}")
+
+        val response = api.streamChatCompletion(request)
+        Log.d("GrooveSSE", "← HTTP ${response.code()} ${response.message()}")
+        Log.d("GrooveSSE", "   headers=${response.headers()}")
+
+        if (!response.isSuccessful) {
+            val errBody = response.errorBody()?.string()
+            Log.e("GrooveSSE", "   ERROR body=$errBody")
+            error("HTTP ${response.code()}: $errBody")
+        }
+
+        val body = response.body()
+        if (body == null) {
+            Log.e("GrooveSSE", "   body=null — nothing to stream")
+            error("Empty streaming response body")
+        }
+
         val source = body.source()
+        var lineCount = 0
+        var dataLineCount = 0
+        var emitCount = 0
+
         while (!source.exhausted()) {
             val line = source.readUtf8Line() ?: break
+            lineCount++
+            Log.d("GrooveSSE", "   raw[$lineCount]: $line")
+
             if (!line.startsWith("data: ")) continue
+            dataLineCount++
             val data = line.removePrefix("data: ").trim()
-            if (data == "[DONE]") break
+
+            if (data == "[DONE]") {
+                Log.d("GrooveSSE", "   [DONE] received — dataLines=$dataLineCount emits=$emitCount")
+                break
+            }
+
             val content = runCatching {
                 JSONObject(data)
                     .getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("delta")
                     .optString("content", "")
-            }.getOrNull() ?: continue
-            if (content.isNotEmpty()) emit(content)
+            }.onFailure { Log.e("GrooveSSE", "   JSON parse error on: $data | err=${it.message}") }
+                .getOrNull() ?: continue
+
+            if (content.isNotEmpty()) {
+                emitCount++
+                emit(content)
+            }
         }
+        Log.d("GrooveSSE", "   stream done — totalLines=$lineCount dataLines=$dataLineCount emits=$emitCount")
     }
 }
