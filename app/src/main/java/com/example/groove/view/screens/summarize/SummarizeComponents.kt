@@ -303,20 +303,24 @@ fun SummaryTextField(
     }
 }
 
-private val availableModels = listOf(
-    "Llama 3.3 70B",
-    "Mistral 7B Instruct",
-    "Gemini Flash 1.5",
-    "DeepSeek R1",
-    "Qwen 2.5 72B",
+data class AiModel(val displayName: String, val modelId: String)
+
+val availableModels = listOf(
+    AiModel("DeepSeek V4 Flash", "deepseek/deepseek-v4-flash:free"),
+    AiModel("Llama 3.3 70B", "meta-llama/llama-3.3-70b-instruct:free"),
+    AiModel("Trinity Large", "arcee-ai/trinity-large-thinking:free"),
+    AiModel("MiniMax M2.5", "minimax/minimax-m2.5:free"),
+    AiModel("Gemma 4 26B", "google/gemma-4-26b-a4b-it:free"),
 )
 
 @Composable
 fun ModelPicker(
+    selectedModelId: String,
+    onModelSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedModel by remember { mutableStateOf(availableModels[0]) }
+    val selectedModel = availableModels.find { it.modelId == selectedModelId } ?: availableModels[0]
 
     Box(modifier = modifier) {
         Surface(
@@ -334,7 +338,7 @@ fun ModelPicker(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = selectedModel,
+                    text = selectedModel.displayName,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -358,16 +362,16 @@ fun ModelPicker(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = model,
+                            text = model.displayName,
                             fontSize = 13.sp,
-                            fontWeight = if (model == selectedModel) FontWeight.SemiBold else FontWeight.Normal,
+                            fontWeight = if (model.modelId == selectedModelId) FontWeight.SemiBold else FontWeight.Normal,
                         )
                     },
                     onClick = {
-                        selectedModel = model
+                        onModelSelected(model.modelId)
                         expanded = false
                     },
-                    trailingIcon = if (model == selectedModel) {
+                    trailingIcon = if (model.modelId == selectedModelId) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,

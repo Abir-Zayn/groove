@@ -161,6 +161,7 @@ fun SummarizeContent(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var wordCount by remember { mutableFloatStateOf(300f) }
+    var selectedModelId by remember { mutableStateOf(availableModels[0].modelId) }
     var isStreaming by remember { mutableStateOf(false) }
     var summaryText by remember { mutableStateOf("") }
     var errorMsg by remember { mutableStateOf<String?>(null) }
@@ -201,7 +202,7 @@ fun SummarizeContent(
             val truncated = content.take(MAX_CONTENT_CHARS)
             Log.d("GrooveStream", "phase=EXECUTING — content ready rawChars=$rawChars truncated=${rawChars > MAX_CONTENT_CHARS} sending to LLM")
             var tokenCount = 0
-            controller.summarizeStreaming(truncated, wordCount.toInt())
+            controller.summarizeStreaming(truncated, wordCount.toInt(), selectedModelId)
                 .catch {
                     Log.d("GrooveStream", "phase=ERROR — stream failed: ${it.message}")
                     errorMsg = it.message ?: "Streaming failed"
@@ -275,7 +276,11 @@ fun SummarizeContent(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ModelPicker(modifier = Modifier.weight(1f))
+                ModelPicker(
+                    selectedModelId = selectedModelId,
+                    onModelSelected = { selectedModelId = it },
+                    modifier = Modifier.weight(1f),
+                )
                 StreamingButton(
                     isStreaming = isStreaming,
                     onClick = { if (isStreaming) stopStreaming() else startStreaming() },

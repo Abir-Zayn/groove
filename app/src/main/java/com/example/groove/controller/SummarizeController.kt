@@ -28,9 +28,9 @@ class SummarizeController {
             ?: error("Empty response from model")
     }
 
-    fun summarizeStreaming(text: String, maxWords: Int): Flow<String> = flow {
+    fun summarizeStreaming(text: String, maxWords: Int, model: String): Flow<String> = flow {
         val request = ChatRequest(
-            model = OpenRouterClient.DEFAULT_MODEL,
+            model = model,
             messages = listOf(
                 Message(
                     role = "system",
@@ -50,6 +50,9 @@ class SummarizeController {
         if (!response.isSuccessful) {
             val errBody = response.errorBody()?.string()
             Log.e("GrooveSSE", "   ERROR body=$errBody")
+            if (response.code() == 429) {
+                error("Experimental models are busy. Please try with another model.")
+            }
             error("HTTP ${response.code()}: $errBody")
         }
 
