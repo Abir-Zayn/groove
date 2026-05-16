@@ -1,5 +1,6 @@
 package com.example.groove.view.screens.splash
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -198,7 +199,10 @@ private fun OnboardingPage3(onGetStarted: () -> Unit) {
         contentAlignment = Alignment.BottomCenter
     ) {
         Button(
-            onClick = onGetStarted,
+            onClick = {
+                Log.d("GrooveNav", "Get Started clicked → navigating to Home")
+                onGetStarted()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp),

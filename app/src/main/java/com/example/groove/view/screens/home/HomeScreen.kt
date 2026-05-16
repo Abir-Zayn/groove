@@ -1,5 +1,6 @@
 package com.example.groove.view.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,7 +57,10 @@ fun HomeScreen(onNavigateToSummarize: (String) -> Unit = {}) {
             GrooveBottomNavBar(
                 tabs = BottomNavTab.all,
                 selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it },
+                onTabSelected = {
+                    Log.d("GrooveNav", "Tab selected → ${it.label}")
+                    selectedTab = it
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

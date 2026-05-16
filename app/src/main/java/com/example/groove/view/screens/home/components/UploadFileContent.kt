@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.groove.controller.FileState
 import com.example.groove.view.theme.GrooveSageGreen
 
 private val ALLOWED_EXTENSIONS = setOf("pdf", "docx", "md", "txt")
@@ -53,6 +54,7 @@ fun UploadFileContent(
         val name = resolveFileName(context, uri)
         val ext = name.substringAfterLast('.', "").lowercase()
         if (ext in ALLOWED_EXTENSIONS) {
+            FileState.pendingUri = uri
             selectedFileName = name
             onFileUploaded(name)
         } else {
