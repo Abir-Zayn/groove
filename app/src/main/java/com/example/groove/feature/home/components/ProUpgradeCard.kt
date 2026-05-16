@@ -1,4 +1,4 @@
-package com.example.groove
+package com.example.groove.feature.home.components
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat

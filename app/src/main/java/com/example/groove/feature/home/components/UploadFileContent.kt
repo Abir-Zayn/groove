@@ -1,4 +1,4 @@
-package com.example.groove
+package com.example.groove.feature.home.components
 
 import android.content.Context
 import android.net.Uri

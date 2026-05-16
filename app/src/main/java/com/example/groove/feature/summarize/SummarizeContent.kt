@@ -1,4 +1,4 @@
-package com.example.groove
+package com.example.groove.feature.summarize
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.groove.ui.components.GrooveTopBar
 import com.example.groove.ui.theme.GrooveSageGreen
 
 @Composable

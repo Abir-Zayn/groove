@@ -1,4 +1,4 @@
-package com.example.groove
+package com.example.groove.feature.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.groove.feature.history.HistoryScreen
+import com.example.groove.feature.home.components.ProUpgradeCard
+import com.example.groove.feature.home.components.UploadFileContent
+import com.example.groove.feature.profile.ProfileScreen
+import com.example.groove.feature.settings.SettingsScreen
 import com.example.groove.navigation.BottomNavTab
 import com.example.groove.navigation.GrooveBottomNavBar
 import com.example.groove.ui.theme.GrooveSageGreen

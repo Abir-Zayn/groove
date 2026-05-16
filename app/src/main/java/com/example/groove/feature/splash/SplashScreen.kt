@@ -1,4 +1,4 @@
-package com.example.groove
+package com.example.groove.feature.splash
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -42,7 +42,6 @@ import com.example.groove.ui.theme.GrooveTheme
 fun SplashScreen(onGetStarted: () -> Unit = {}) {
     val pagerState = rememberPagerState(pageCount = { 3 })
 
-    // gradient uses colorScheme — adapts to day/night automatically
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
             MaterialTheme.colorScheme.background,
@@ -67,7 +66,6 @@ fun SplashScreen(onGetStarted: () -> Unit = {}) {
             }
         }
 
-        // Dot indicators
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -94,7 +92,6 @@ fun SplashScreen(onGetStarted: () -> Unit = {}) {
             }
         }
 
-        // Skip button — visible on page 1 only
         AnimatedVisibility(
             visible = pagerState.currentPage == 0,
             enter = fadeIn(),
@@ -151,7 +148,7 @@ private fun OnboardingPage1() {
         Text(
             text = "Whether summarizing content, paraphrasing or generating a story — we have your backup. Use it for free.",
             fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.65f), // muted secondary text
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.65f),
             textAlign = TextAlign.Center,
             lineHeight = 26.sp
         )
