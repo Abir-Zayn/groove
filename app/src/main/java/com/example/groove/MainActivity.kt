@@ -11,10 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.groove.feature.home.HomeScreen
-import com.example.groove.feature.splash.SplashScreen
-import com.example.groove.feature.summarize.SummarizeContent
-import com.example.groove.ui.theme.GrooveTheme
+import com.example.groove.view.screens.home.HomeScreen
+import com.example.groove.view.screens.splash.SplashScreen
+import com.example.groove.view.screens.summarize.SummarizeContent
+import com.example.groove.view.theme.GrooveTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
