@@ -1,14 +1,20 @@
 package com.example.groove.view.screens.summarize
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,13 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.util.Log
 import com.example.groove.controller.FileState
 import com.example.groove.controller.SummarizeController
 import com.example.groove.view.components.GrooveTopBar
-import com.example.groove.view.theme.GrooveSageGreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
@@ -44,6 +49,7 @@ fun SummarizeContent(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val controller = remember { SummarizeController() }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var wordCount by remember { mutableFloatStateOf(300f) }
     var isStreaming by remember { mutableStateOf(false) }
@@ -93,7 +99,16 @@ fun SummarizeContent(
                     onBack()
                 },
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,26 +120,42 @@ fun SummarizeContent(
         ) {
             Spacer(Modifier.height(20.dp))
 
-            Surface(
-                shape = MaterialTheme.shapes.small,
-                color = GrooveSageGreen.copy(alpha = 0.12f),
-            ) {
-                Text(
-                    text = fileName,
-                    fontSize = 13.sp,
-                    color = GrooveSageGreen,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                )
-            }
+            FileChip(
+                fileName = fileName,
+                onRemove = {
+                    stopStreaming()
+                    Log.d("GrooveNav", "File removed → $fileName")
+                    FileState.pendingUri = null
+                    onBack()
+                },
+            )
 
             Spacer(Modifier.height(24.dp))
 
             ContextSlider(
                 wordCount = wordCount,
                 onWordCountChange = { wordCount = it },
+                onInvalidInput = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Number should be within 150 to 1000")
+                    }
+                },
             )
+
+            Spacer(Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ModelPicker(modifier = Modifier.weight(1f))
+                StreamingButton(
+                    isStreaming = isStreaming,
+                    onClick = { if (isStreaming) stopStreaming() else startStreaming() },
+                    modifier = Modifier.weight(1f),
+                )
+            }
 
             Spacer(Modifier.height(16.dp))
 
@@ -145,13 +176,6 @@ fun SummarizeContent(
                     )
                 }
             }
-
-            Spacer(Modifier.height(16.dp))
-
-            StreamingButton(
-                isStreaming = isStreaming,
-                onClick = { if (isStreaming) stopStreaming() else startStreaming() },
-            )
 
             Spacer(Modifier.height(24.dp))
         }

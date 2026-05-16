@@ -3,6 +3,7 @@ package com.example.groove.view.screens.home.components
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -56,6 +57,7 @@ fun UploadFileContent(
         if (ext in ALLOWED_EXTENSIONS) {
             FileState.pendingUri = uri
             selectedFileName = name
+            Log.d("GrooveNav", "File attached → $name")
             onFileUploaded(name)
         } else {
             onError("Wrong File has been upload. Try with doc or txt file.")
