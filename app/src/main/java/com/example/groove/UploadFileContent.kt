@@ -40,6 +40,7 @@ private val ALLOWED_EXTENSIONS = setOf("pdf", "docx", "md", "txt")
 @Composable
 fun UploadFileContent(
     onError: (String) -> Unit,
+    onFileUploaded: (fileName: String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -53,6 +54,7 @@ fun UploadFileContent(
         val ext = name.substringAfterLast('.', "").lowercase()
         if (ext in ALLOWED_EXTENSIONS) {
             selectedFileName = name
+            onFileUploaded(name)
         } else {
             onError("Wrong File has been upload. Try with doc or txt file.")
         }

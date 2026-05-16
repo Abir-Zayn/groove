@@ -42,7 +42,7 @@ import com.example.groove.util.greeting
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onNavigateToSummarize: (String) -> Unit = {}) {
     var selectedTab by remember { mutableStateOf<BottomNavTab>(BottomNavTab.Home) }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -58,7 +58,7 @@ fun HomeScreen() {
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedTab) {
-                BottomNavTab.Home -> HomeContent(snackbarHostState)
+                BottomNavTab.Home -> HomeContent(snackbarHostState, onNavigateToSummarize)
                 BottomNavTab.History -> HistoryScreen()
                 BottomNavTab.Settings -> SettingsScreen()
                 BottomNavTab.Profile -> ProfileScreen()
@@ -68,7 +68,10 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun HomeContent(snackbarHostState: SnackbarHostState) {
+private fun HomeContent(
+    snackbarHostState: SnackbarHostState,
+    onNavigateToSummarize: (String) -> Unit,
+) {
     val scope = rememberCoroutineScope()
 
     Column(
@@ -104,6 +107,7 @@ private fun HomeContent(snackbarHostState: SnackbarHostState) {
 
         UploadFileContent(
             onError = { msg -> scope.launch { snackbarHostState.showSnackbar(msg) } },
+            onFileUploaded = onNavigateToSummarize,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
         )
 
